@@ -1,7 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 
-// const commonRoute = require("./common");
+const login = require("./login");
 // const adminRoute = require("./admin");
 const userRoute = require("./user");
 // const vendorRoute = require("./vendor");
@@ -15,7 +15,7 @@ const userRoute = require("./user");
 // const reportsRoute = require("./reports")
 
 
-// Router.use(commonRoute);
+Router.use(login);
 // Router.use(adminRoute);
 Router.use(userRoute);
 // Router.use(vendorRoute);
