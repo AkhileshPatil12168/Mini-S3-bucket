@@ -7,11 +7,11 @@ const bucketSchema = new mongoose.Schema(
       type: objectId,
       ref: "User",
       required: true,
-      unique: true,
     },
     bucketName: {
       type: String,
       required: true,
+      unique: true,
     },
     bucketPath: {
       type: String,
