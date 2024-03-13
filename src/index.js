@@ -30,9 +30,7 @@ app.use(express.json());
 app.use("/", Router);
 
 mongoose
-  .connect(process.env.mongoClust, {
-    useNewUrlParser: true,
-  })
+  .connect(process.env.mongoClust)
   .then(() => console.log("MongoDb is connected"))
   .catch((err) => console.log(err));
 
