@@ -1,7 +1,12 @@
+const bcrypt = require("bcrypt");
+const fs = require("fs");
+const path = require("path");
+
 const userModel = require("../../models/userModel");
 const roleModel = require("../../models/roleModel");
-const bcrypt = require("bcrypt");
+const storageModel = require("../../models/storageModel");
 // const mailSender = require("../NodeMailer/nodeMailer");
+
 const {
   emptyBody,
   validTrim,
@@ -74,6 +79,19 @@ const createUser = async (req, res) => {
       password: password,
       phone: phone,
       roleRef: "User",
+    });
+
+    await storageModel.create({ userId: createUser._id });
+
+    const absoluteDirPath = path.resolve(__dirname, "../../storages");
+
+    if (!fs.existsSync(absoluteDirPath)) {
+      throw new Error(`Directory '${absoluteDirPath}' does not exist.`);
+    }
+
+    const newDirPath = path.join(absoluteDirPath, `${createUser._id}`);
+    await fs.mkdir(newDirPath, (err) => {
+      if (err) console.log(err);
     });
 
     // mailSender(email, "singUp", "registeration successful");
