@@ -2,14 +2,14 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const multer = require("multer");
-// const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const Router = require("./routes/routes")
 
 require("dotenv").config();
 
 app.use(multer().any());
-// app.use(cookieParser());
+app.use(cookieParser());
 
 app.use(
   "*",
