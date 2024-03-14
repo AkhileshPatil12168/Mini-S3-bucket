@@ -22,15 +22,15 @@ const createBucket = async (req, res) => {
       return res.status(400).send({ status: false, message: "use different name" });
 
     const absoluteDirPath = path.resolve(__dirname, `../../storages/${userId}`);
+    if (!fs.existsSync(absoluteDirPath)) {
+      throw new Error(`Directory '${absoluteDirPath}' does not exist.`);
+    }
     const newDirPath = path.join(absoluteDirPath, bucketName);
 
     await fs.mkdir(newDirPath, (err) => {
       if (err) console.log(err);
     });
 
-    if (!fs.existsSync(absoluteDirPath)) {
-      throw new Error(`Directory '${absoluteDirPath}' does not exist.`);
-    }
     const newBucket = await bucketModel.create({ userId, bucketName, bucketPath: newDirPath });
 
     await storageModel.findOneAndUpdate(
