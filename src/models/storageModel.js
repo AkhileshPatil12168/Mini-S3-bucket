@@ -11,10 +11,10 @@ const storageSchema = new mongoose.Schema(
     },
     storageSize: {
       type: Number,
-      default: 500,
+      default: (500*1024*1024),
     },
     usedSpace: { type: Number, default: 0 },
-    freeSpace: { type: Number, default: 500 },
+    freeSpace: { type: Number, default: (500*1024*1024) },
 
     buckets: [
       {
