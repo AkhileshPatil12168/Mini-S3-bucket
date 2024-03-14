@@ -1,47 +1,31 @@
 const mongoose = require("mongoose");
 const objectId = mongoose.Schema.Types.ObjectId;
 
-const bucketSchema = new mongoose.Schema(
+const objectSchema = new mongoose.Schema(
   {
     userId: {
       type: objectId,
       ref: "User",
       required: true,
-      unique: true,
     },
     bucketId: {
       type: objectId,
       ref: "Buckets",
       required: true,
-      unique: true,
     },
     objectName: {
       type: String,
     },
-    ObjectType: { type: String },
-    ObjectSize: {
+    objectType: { type: String },
+    objectSize: {
       type: Number,
     },
-    ObjectPath: {
+    objectPath: {
       type: String,
     },
-    ObjectLink: {
+    objectLink: {
       type: String,
     },
-
-    bucketName: {
-      type: String,
-      required: true,
-    },
-    bucketPath: {
-      type: String,
-    },
-    bucketSize: {
-      type: Number,
-      default: 0,
-    },
-
-    totalObjects: { type: Number, default: 0 },
 
     isDeleted: {
       type: Boolean,
@@ -51,4 +35,4 @@ const bucketSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Buckets", bucketSchema);
+module.exports = mongoose.model("Objects", objectSchema);
