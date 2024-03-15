@@ -25,18 +25,26 @@ const createBucket = async (req, res) => {
     if (!fs.existsSync(absoluteDirPath)) {
       throw new Error(`Directory '${absoluteDirPath}' does not exist.`);
     }
-    const newDirPath = path.join(absoluteDirPath, bucketName);
+
+    const newBucket = await bucketModel.create({ userId, bucketName });
+
+    const newDirPath = path.join(absoluteDirPath, `${newBucket._id}`);
 
     await fs.mkdir(newDirPath, (err) => {
       if (err) console.log(err);
     });
-
-    const newBucket = await bucketModel.create({ userId, bucketName, bucketPath: newDirPath });
+    const finalBucket = await bucketModel.findByIdAndUpdate(
+      newBucket._id,
+      {
+        bucketPath: newDirPath,
+      },
+      { new: true }
+    );
 
     await storageModel.findOneAndUpdate(
       { userId },
       {
-        $push: { buckets: { bucketId: newBucket._id } },
+        $push: { buckets: { bucketId: finalBucket._id } },
         $inc: { totalBuckets: 1 },
       },
       { upsert: true, new: true }
@@ -45,7 +53,7 @@ const createBucket = async (req, res) => {
     return res.status(200).send({
       status: true,
       message: "bucket created successfully",
-      data: newBucket,
+      data: finalBucket,
     });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
