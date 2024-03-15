@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const {nanoid}  = require("nanoid");
 
 const objectModel = require("../../models/objectModel");
 const bucketModel = require("../../models/bucketModel");
@@ -22,9 +23,11 @@ const createObject = async (req, res) => {
     const files = req.files;
     let arrayOfObjects = [];
     let totalSize = 0;
+
     for (let obj of files) {
       let object = { userId, bucketId };
       let originalname = addUnderscore(obj.originalname);
+
       const filePath = path.join(getBucket.bucketPath, originalname);
       const dirPath = path.dirname(filePath);
       if (!fs.existsSync(dirPath)) {
@@ -36,11 +39,12 @@ const createObject = async (req, res) => {
       object.objectSize = obj.size;
       totalSize += obj.size;
       object.objectPath = filePath;
-      object.objectLink = `${process.env.SERVER}${bucketId}/${originalname}`;
+      object.objectMiniId = nanoid(7)
+      object.objectLink = `${process.env.SERVER}${object.objectMiniId}`;
       arrayOfObjects.push(object);
     }
 
-    const createdObject = await objectModel.insertMany(arrayOfObjects); 
+    const createdObject = await objectModel.insertMany(arrayOfObjects);
     await bucketModel.findByIdAndUpdate(
       bucketId,
       { $inc: { bucketSize: totalSize, totalObjects: arrayOfObjects.length } },

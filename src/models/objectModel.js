@@ -8,21 +8,29 @@ const objectSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    
     bucketId: {
       type: objectId,
       ref: "Buckets",
       required: true,
     },
+
     objectName: {
       type: String,
     },
+
+    objectMiniId: { type: String },
+
     objectType: { type: String },
+
     objectSize: {
       type: Number,
     },
+
     objectPath: {
       type: String,
     },
+
     objectLink: {
       type: String,
     },

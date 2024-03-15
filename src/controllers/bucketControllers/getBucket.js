@@ -41,7 +41,14 @@ const getBucket = async (req, res) => {
 
     const objects = await objectModel
       .find({ bucketId })
-      .select({ objectName: 1, objectType: 1, objectSize: 1, objectLink: 1, createdAt: 1 })
+      .select({
+        objectName: 1,
+        objectType: 1,
+        objectSize: 1,
+        objectLink: 1,
+        createdAt: 1,
+        objectMiniId: 1,
+      })
       .lean();
 
     return res.status(200).send({
