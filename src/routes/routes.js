@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 const login = require("./login");
-// const adminRoute = require("./admin");
+const adminRoute = require("./admin");
 const userRoute = require("./user");
 const bucketRoute = require("./bucket");
 const objectRoute = require("./object");
@@ -14,9 +14,8 @@ const objectRoute = require("./object");
 // const advertisementRoute = require("./advertisement")
 // const reportsRoute = require("./reports")
 
-
 Router.use(login);
-// Router.use(adminRoute);
+Router.use(adminRoute);
 Router.use(userRoute);
 Router.use(bucketRoute);
 Router.use(objectRoute);
