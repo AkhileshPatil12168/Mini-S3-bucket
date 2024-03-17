@@ -1,12 +1,18 @@
 const express = require("express");
 const Router = express.Router();
+const cors = require("cors");
 const authentication = require("../middleware/authentication");
 const authorization = require("../middleware/authorization");
 
 const createObject = require("../controllers/objectControllers.js/createObject");
-const { getObject } = require("../controllers/objectControllers.js/getObject");
+const { getObject, getObjectByUrl } = require("../controllers/objectControllers.js/getObject");
 
 Router.post("/user/:userId/bucket/:bucketId", authentication, authorization, createObject);
-Router.get("/user/:userId/bucket/:bucketId/object/:objectId", authentication, authorization, getObject);
-
+Router.get(
+  "/user/:userId/bucket/:bucketId/object/:objectId",
+  authentication,
+  authorization,
+  getObject
+);
+Router.get("/object/:id", cors(), getObjectByUrl);
 module.exports = Router;
