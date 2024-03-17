@@ -1,0 +1,91 @@
+const bcrypt = require("bcrypt");
+const adminModel = require("../../models/adminModel");
+
+const {
+  emptyBody,
+  isNotProvided,
+  validTrim,
+  isValidWord,
+  isValidEmail,
+  isValidPwd,
+  isValidObjectId,
+} = require("../../utils/validators");
+
+const updateAdmin = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const userData = await adminModel.findById(userId);
+    if (!userData) return res.status(404).send({ status: false, message: "user not found." });
+
+    if (emptyBody(req.body))
+      return res.status(400).send({ status: false, message: "provide some data" });
+    let data = req.body;
+
+    let { userName, email, password } = data;
+
+    if (userName) {
+      if (!isNotProvided(userName))
+        return res.status(400).send({ status: false, message: "provide the userName" });
+
+      data.userName = validTrim(userName);
+      if (!isValidWord(data.userName))
+        return res.status(400).send({ status: false, message: "enter a valid userName" });
+    }
+
+    if (email) {
+      if (!isNotProvided(email))
+        return res.status(400).send({ status: false, message: "provide the email" });
+
+      data.email = validTrim(email);
+      if (!isValidEmail(data.email))
+        return res.status(400).send({ status: false, message: "enter a valid email" });
+    }
+
+    let checkEmail = await rolemodel.findOne({ email: data.email });
+    if (checkEmail) return res.status(400).send({ status: false, message: "Email already exist" });
+
+    if (phone) {
+      if (!isNotProvided(phone))
+        return res.status(400).send({ status: false, message: "provide the phone" });
+
+      data.phone = validTrim(phone);
+      if (!isValidPhone(data.phone))
+        return res.status(400).send({ status: false, message: "enter a valid phone" });
+    }
+
+    let checkPhone = await vendorModel.findOne({ phone: data.phone });
+    if (checkPhone)
+      return res.status(400).send({ status: false, message: "Phone number already exist" });
+
+    if (password) {
+      if (!isNotProvided(password))
+        return res.status(400).send({ status: false, message: "provide the password" });
+
+      password = password.trim();
+      if (!isValidPwd(password))
+        return res.status(400).send({ status: false, message: "enter a valid password" });
+      data.password = await bcrypt.hash(password, Number(process.env.SALT));
+    }
+
+    let updateData = await adminModel.findByIdAndUpdate(userId, data, {
+      new: true,
+    });
+    if (data.email || data.password || data.phone) {
+      await roleModel.findOneAndUpdate(
+        { originalId: userId },
+        { email: data.email, password: data.password, phone: data.phone },
+        { new: true }
+      );
+    }
+    res.status(200).send({
+      status: true,
+      message: "Update admin is successful",
+      data: updateData,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = updateAdmin;
