@@ -40,7 +40,7 @@ const createObject = async (req, res) => {
       totalSize += obj.size;
       object.objectPath = filePath;
       object.objectMiniId = nanoid(7)
-      object.objectLink = `${process.env.SERVER}${object.objectMiniId}`;
+      object.objectLink = `${process.env.SERVER}object/${object.objectMiniId}`;
       arrayOfObjects.push(object);
     }
 

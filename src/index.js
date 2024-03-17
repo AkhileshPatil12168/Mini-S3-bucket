@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const Router = require("./routes/routes")
+const Router = require("./routes/routes");
 
 require("dotenv").config();
 
@@ -24,7 +24,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// const Router = require("./routes/routes");
 
 app.use(express.json());
 app.use("/", Router);
