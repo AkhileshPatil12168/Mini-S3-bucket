@@ -1,57 +1,37 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../../Context/loginContext";
+import { megaBytesConverter } from "../../../utils/utilityFunctions";
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
-  // Mock data for demonstration
-  const recentUsers = [
-    { userId: 1, userName: "User 1", email: "user1@example.com" },
-    { userId: 2, userName: "User 2", email: "user2@example.com" },
-    { userId: 2, userName: "User 2", email: "user2@example.com" },
-    { userId: 2, userName: "User 2", email: "user2@example.com" },
+  const { whoLogedIn, isLogedIn } = useContext(LoginContext);
 
-    // Add more recent users here
-  ];
+  const [data, setData] = useState({});
 
-  const storageData = [
-    { userId: 1, userName: "User 1", storageAllocated: "50 GB" },
-    { userId: 2, userName: "User 2", storageAllocated: "100 GB" },
-    { userId: 2, userName: "User 2", storageAllocated: "100 GB" },
-    { userId: 2, userName: "User 2", storageAllocated: "100 GB" },
+  const getSummery = async () => {
+    try {
+      const response = await axios.get(
+        process.env.BACKENDAPI + `/admin/${whoLogedIn?.id}/serverinfo/v1`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data.data);
+      setData(response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    // Add more storage data here
-  ];
-
-  const recentRequests = [
-    { name: "John Doe", email: "john@example.com", message: "Request message 1" },
-    { name: "Jane Doe", email: "jane@example.com", message: "Request message 2" },
-    { name: "Jane Doe", email: "jane@example.com", message: "Request message 2" },
-    { name: "Jane Doe", email: "jane@example.com", message: "Request message 2" },
-
-    // Add more recent requests here
-  ];
-
-  const recentBuckets = [
-    { userId: 1, bucketName: "Bucket 1" },
-    { userId: 2, bucketName: "Bucket 2" },
-    { userId: 2, bucketName: "Bucket 2" },
-    { userId: 2, bucketName: "Bucket 2" },
-
-    // Add more recent buckets here
-  ];
-
-  const recentUploadedObjects = [
-    { objectId: 1, objectSize: "5 MB" },
-    { objectId: 2, objectSize: "2 MB" },
-    { objectId: 2, objectSize: "2 MB" },
-    { objectId: 2, objectSize: "2 MB" },
-
-    // Add more recent uploaded objects here
-  ];
+  useEffect(() => {
+    getSummery();
+  }, []);
 
   return (
     <div className="bg-gray-900  min-h-screen px-4  ">
-      <div className="container mx-auto py-8 flex-grow ">
+      <div className="container mx-auto flex-grow ">
         <h1 className="text-3xl font-bold mb-8 text-center">Admin Dashboard</h1>
 
         <div className=" flex justify-center">
@@ -68,10 +48,17 @@ const AdminHomePage = () => {
               Server Information
             </h2>
             <div className="mb-4 pl-4 text-lg   ">
-              <p className="">Server Used Storage : </p>
-              <p className="">Overall Users : </p>
-              <p className="">Total Buckets : </p>
-              <p className="">Total objects : </p>
+              <p className="">
+                Total Allocated Storage:{" "}
+                {megaBytesConverter(data?.server?.OverAllStorageAllocated, "GB")} GB
+              </p>
+              <p className="">
+                Total Used Storage : {megaBytesConverter(data?.server?.OverAllStorageUsed, "ceil")}{" "}
+                MB
+              </p>
+              <p className="">Overall Users : {data?.server?.overAllUsers}</p>
+              <p className="">Total Buckets : {data?.server?.overAllBuckets}</p>
+              <p className="">Total objects : {data?.server?.overAllObjects}</p>
             </div>
           </div>
 
@@ -80,10 +67,11 @@ const AdminHomePage = () => {
               Storage Data
             </h2>
 
-            {storageData.map((data) => (
-              <div key={data.userId} className="mb-4 pl-4 ">
+            {data?.storages?.map((data) => (
+              <div key={data.userId} className="mt-2 pl-4 pb-2 border-b-2">
                 <p>User ID: {data.userId}</p>
-                <p>Storage Allocated: {data.storageAllocated}</p>
+                <p>Storage Allocated: {megaBytesConverter(data?.storageSize)} MB</p>
+                <p>Used: {megaBytesConverter(data.usedSpace, "ceil")}</p>
               </div>
             ))}
           </div>
@@ -93,11 +81,11 @@ const AdminHomePage = () => {
               Recent Users
             </h2>
 
-            {recentUsers.map((user) => (
-              <div key={user.userId} className="mb-4 pl-4  ">
-                <p>User ID: {user.userId}</p>
-                <p>User Name: {user.userName}</p>
-                <p>Email: {user.email}</p>
+            {data?.users?.map((user, index) => (
+              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+                <p>User ID: {user._id}</p>
+                <p>User Name: {user?.fname + " " + user?.lname}</p>
+                <p>Email: {user?.email}</p>
               </div>
             ))}
           </div>
@@ -107,11 +95,11 @@ const AdminHomePage = () => {
               Recent Requests
             </h2>
 
-            {recentRequests.map((request, index) => (
-              <div key={index} className="mb-4 pl-4 ">
-                <p>Name: {request.name}</p>
-                <p>Email: {request.email}</p>
-                <p>Message: {request.message}</p>
+            {data?.requests?.map((request, index) => (
+              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+                <p>Name: {request?.name}</p>
+                <p>Email: {request?.email}</p>
+                <p>Message: {request?.message}</p>
               </div>
             ))}
           </div>
@@ -121,10 +109,10 @@ const AdminHomePage = () => {
               Recent Buckets
             </h2>
 
-            {recentBuckets.map((bucket, index) => (
-              <div key={index} className="mb-4 pl-4 ">
-                <p>User ID: {bucket.userId}</p>
-                <p>Bucket Name: {bucket.bucketName}</p>
+            {data?.buckets?.map((bucket, index) => (
+              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+                <p>User ID: {bucket?.userId}</p>
+                <p>Bucket Name: {bucket?.bucketName}</p>
               </div>
             ))}
           </div>
@@ -134,10 +122,10 @@ const AdminHomePage = () => {
               Recent Uploaded Objects
             </h2>
 
-            {recentUploadedObjects.map((object, index) => (
-              <div key={index} className="mb-4 pl-4 ">
-                <p>Object ID: {object.objectId}</p>
-                <p>Object Size: {object.objectSize}</p>
+            {data?.objects?.map((object, index) => (
+              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+                <p>Object ID: {object?._id}</p>
+                <p>Object Size: {megaBytesConverter(object?.objectSize, "ceil")} MB</p>
               </div>
             ))}
           </div>
