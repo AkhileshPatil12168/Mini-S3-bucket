@@ -75,6 +75,10 @@ const isValidDate =(value)=>{
       return !isNaN(date.getTime( new Date(value)));
 }
 
+const isValidBucketName = (value) => {
+  return /^[a-zA-Z0-9.-_ ]{4,}$/.test(value);
+};
+
 
 module.exports = {
     emptyBody,
@@ -91,5 +95,6 @@ module.exports = {
     isValidUserName,
     isValidStatus,
     isValidAdvertisementType,
-    isValidDate
+    isValidDate,
+    isValidBucketName
 };

@@ -3,7 +3,7 @@ const storageModel = require("../../models/storageModel");
 const fs = require("fs");
 const path = require("path");
 
-const { validTrim, isValidWord } = require("../../utils/validators");
+const { validTrim, isValidBucketName } = require("../../utils/validators");
 
 const createBucket = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ const createBucket = async (req, res) => {
     if (!bucketName)
       return res.status(400).send({ status: false, message: "bucket name is required" });
     bucketName = validTrim(bucketName);
-    if (!isValidWord(bucketName))
+    if (!isValidBucketName(bucketName))
       return res.status(400).send({ status: false, message: "enter a valid bucket name" });
 
     const checkduplicate = await bucketModel.findOne({ userId, bucketName }).lean();
