@@ -4,6 +4,7 @@ const Router = express.Router();
 const login = require("./login");
 const adminRoute = require("./admin");
 const userRoute = require("./user");
+const storageRoute = require("./storage");
 const bucketRoute = require("./bucket");
 const objectRoute = require("./object");
 // const cartRoute = require("./cart");
@@ -19,12 +20,8 @@ Router.use(adminRoute);
 Router.use(userRoute);
 Router.use(bucketRoute);
 Router.use(objectRoute);
-// Router.use(cartRoute);
-// Router.use(orderRoute);
-// Router.use(testRoute);
-// Router.use(reviewRoute);
-// Router.use(wishListRoute)
-// Router.use(advertisementRoute)
+Router.use(storageRoute);
+
 // Router.use(reportsRoute)
 
 //_____FOR NOT VALID APIs_____
