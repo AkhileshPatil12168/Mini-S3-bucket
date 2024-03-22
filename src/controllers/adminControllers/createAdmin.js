@@ -19,11 +19,14 @@ const createAdmin = async (req, res) => {
     if (emptyBody(req.body))
       return res.status(400).send({ status: false, message: "provide some data" });
 
+    if (!secretKey)
+      return res.status(400).send({ status: false, message: "secretKey is mandatory" });
+    secretKey = secretKey.trim();
     if (!isValidString(secretKey))
       return res.status(400).send({ status: false, message: "not a valid format of secretKey" });
     if (secretKey !== process.env.secretKey)
       return res.status(400).send({ status: false, message: "secretKey is not correct" });
-    
+
     if (!userName)
       return res.status(400).send({ status: false, message: "First name is required" });
     userName = validTrim(userName);
@@ -57,10 +60,6 @@ const createAdmin = async (req, res) => {
     if (!isValidPwd(password))
       return res.status(400).send({ status: false, message: "enter a valid password" });
     password = await bcrypt.hash(password, Number(process.env.SALT));
-
-    if (!secretKey)
-      return res.status(400).send({ status: false, message: "secretKey is mandatory" });
-    secretKey = secretKey.trim();
 
     const admin = {
       userName: userName,
