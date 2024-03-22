@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const {nanoid}  = require("nanoid");
+const { nanoid } = require("nanoid");
 
 const objectModel = require("../../models/objectModel");
 const bucketModel = require("../../models/bucketModel");
@@ -21,6 +21,9 @@ const createObject = async (req, res) => {
       return res.status(400).send({ status: false, message: "bucket does not exist." });
 
     const files = req.files;
+
+    if (files.length == 0)
+      return res.status(400).send({ status: false, message: "no file uploaded" });
     let arrayOfObjects = [];
     let totalSize = 0;
 
@@ -39,7 +42,7 @@ const createObject = async (req, res) => {
       object.objectSize = obj.size;
       totalSize += obj.size;
       object.objectPath = filePath;
-      object.objectMiniId = nanoid(7)
+      object.objectMiniId = nanoid(7);
       object.objectLink = `${process.env.SERVER}object/${object.objectMiniId}`;
       arrayOfObjects.push(object);
     }
