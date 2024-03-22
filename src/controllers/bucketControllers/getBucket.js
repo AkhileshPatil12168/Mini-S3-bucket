@@ -9,6 +9,7 @@ const getBuckets = async (req, res) => {
 
     const availableBuckets = await bucketModel
       .find({ userId })
+      .sort({ createdAt: -1 })
       .select({ __v: 0, isDeleted: 0, bucketPath: 0, userId: 0 })
       .lean();
     if (availableBuckets.length == 0)
@@ -49,6 +50,7 @@ const getBucket = async (req, res) => {
         createdAt: 1,
         objectMiniId: 1,
       })
+      .sort({ updatedAt: -1 })
       .lean();
 
     return res.status(200).send({
