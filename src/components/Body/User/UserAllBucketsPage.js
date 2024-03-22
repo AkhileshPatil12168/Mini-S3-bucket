@@ -38,7 +38,7 @@ const BucketsPage = () => {
       });
 
       console.log(response.data.data);
-      setBuckets([{...response.data.data}, ...buckets]);
+      setBuckets([{...response?.data?.data}, ...buckets]);
     } catch (error) {
       console.log(error);
     }
