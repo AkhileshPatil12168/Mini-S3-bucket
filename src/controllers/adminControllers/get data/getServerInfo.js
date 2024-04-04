@@ -3,6 +3,7 @@ const userModel = require("../../../models/userModel");
 const connectUsModel = require("../../../models/contactUsModel");
 const bucketModel = require("../../../models/bucketModel");
 const objectModel = require("../../../models/objectModel");
+const recordServerError = require("../../serverErrorControllers/recordServerError");
 
 const getServerInformation = async (req, res) => {
   try {
@@ -56,6 +57,7 @@ const getServerInformation = async (req, res) => {
 
     return res.status(200).send({ status: true, message: "successfull", data:{...data,server:{...data.server[0]}} });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

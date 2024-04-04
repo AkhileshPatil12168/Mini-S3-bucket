@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const recordServerError = require("../controllers/serverErrorControllers/recordServerError");
 
 const authentication = async (req, res, next) => {
     try {
@@ -21,6 +22,7 @@ const authentication = async (req, res, next) => {
             }
         });
     } catch (error) {
+        recordServerError(error, req);
         res.status(500).send({ status: false, message: error.message });
     }
 };

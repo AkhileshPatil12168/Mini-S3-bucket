@@ -6,6 +6,7 @@ const objectModel = require("../../models/objectModel");
 const bucketModel = require("../../models/bucketModel");
 const addUnderscore = require("../../utils/addUnderscore");
 const storageModel = require("../../models/storageModel");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const createObject = async (req, res) => {
   try {
@@ -68,6 +69,7 @@ const createObject = async (req, res) => {
       data: createdObject,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

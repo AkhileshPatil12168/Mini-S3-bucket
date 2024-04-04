@@ -10,6 +10,7 @@ const {
   isValidPwd,
   isValidObjectId,
 } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const updateAdmin = async (req, res) => {
   try {
@@ -84,6 +85,7 @@ const updateAdmin = async (req, res) => {
       data: updateData,
     });
   } catch (error) {
+    recordServerError(error, req);
     return res.status(500).send({ status: false, message: error.message });
   }
 };

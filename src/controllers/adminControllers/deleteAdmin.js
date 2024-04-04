@@ -4,6 +4,7 @@ const roleModel = require("../../models/roleModel");
 const bcrypt = require("bcrypt");
 
 const { isValidObjectId, emptyBody } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const deleteAdmin = async (req, res) => {
   try {
@@ -41,8 +42,9 @@ const deleteAdmin = async (req, res) => {
         message: "deleted succesfully",
       });
     }
-  } catch (err) {
-    res.status(500).send({ status: false, message: err.message });
+  } catch (error) {
+    recordServerError(error, req);
+    res.status(500).send({ status: false, message: error.message });
   }
 };
 

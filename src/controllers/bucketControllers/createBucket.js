@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { validTrim, isValidBucketName } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const createBucket = async (req, res) => {
   try {
@@ -56,6 +57,7 @@ const createBucket = async (req, res) => {
       data: finalBucket,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

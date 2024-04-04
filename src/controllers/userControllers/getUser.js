@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 
 const userModel = require("../../models/userModel");
 const { isValidObjectId } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const getUserDetails = async function (req, res) {
     try {
@@ -17,8 +18,9 @@ const getUserDetails = async function (req, res) {
         return res
             .status(200)
             .send({ status: true, message: "Users profile details", data: userData });
-    } catch (err) {
-        res.status(500).send({ status: false, message: err.message });
+    } catch (error) {
+        recordServerError(error, req);
+        res.status(500).send({ status: false, message: error.message });
     }
 };
 

@@ -40,6 +40,7 @@ const getAllObjects = async (req, res) => {
       data: objects,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -63,6 +64,7 @@ const getObject = async (req, res) => {
       data: bucketObject,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -107,6 +109,7 @@ const getObjectByUrl = async (req, res) => {
     });
     res.end(fileData);
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

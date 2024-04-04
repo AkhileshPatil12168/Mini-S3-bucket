@@ -5,6 +5,7 @@ const roleModel = require("../../models/roleModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { emptyBody, isValidEmail } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 // const mailSender = require("../NodeMailer/nodeMailer");
 
 const login = async (req, res) => {
@@ -72,8 +73,9 @@ const login = async (req, res) => {
       message: "User login successfully",
       data: { userType: user.roleRef, userId: user.originalId, token: token },
     });
-  } catch (err) {
-    return res.status(500).send({ status: false, data: err.message });
+  } catch (error) {
+    recordServerError(error, req)
+    return res.status(500).send({ status: false, data: error.message });
   }
 };
 module.exports = login;

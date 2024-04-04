@@ -1,5 +1,6 @@
 const objectModel = require("../../models/objectModel");
 const storageModel = require("../../models/storageModel");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const getStorageInfo = async (req, res) => {
   try {
@@ -23,6 +24,7 @@ const getStorageInfo = async (req, res) => {
 
     return res.status(200).send({ data: { storageInfo, recentObjects } });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -49,6 +51,7 @@ const getFullStorageInfo = async (req, res) => {
 
     return res.status(200).send({ data: storageInfo });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

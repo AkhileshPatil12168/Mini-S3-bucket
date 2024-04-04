@@ -16,6 +16,7 @@ const {
   isValidPwd,
   isValidDate,
 } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const createUser = async (req, res) => {
   try {
@@ -102,6 +103,7 @@ const createUser = async (req, res) => {
       data: createUser,
     });
   } catch (error) {
+    recordServerError(error, req);
     return res.status(500).send({ status: false, message: error.message });
   }
 };

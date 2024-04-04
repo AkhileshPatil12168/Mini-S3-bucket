@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const {
     isValidObjectId
   } = require("../utils/validators");
+const recordServerError = require("../controllers/serverErrorControllers/recordServerError");
 
 const authorization = async (req, res, next) => {
     try {
@@ -21,6 +22,7 @@ const authorization = async (req, res, next) => {
 
           next();
     } catch (error) {
+      recordServerError(error, req);
         res.status(500).send({ status: false, message: error.message });
     }
 };

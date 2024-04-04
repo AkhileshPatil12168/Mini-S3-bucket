@@ -1,6 +1,7 @@
 const bucketModel = require("../../models/bucketModel");
 
 const { isNotProvided, validTrim, isValidWord, emptyBody } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const updateBucket = async (req, res) => {
   try {
@@ -37,6 +38,7 @@ const updateBucket = async (req, res) => {
       data: updatedBucket,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

@@ -1,5 +1,6 @@
 const bucketModel = require("../../../models/bucketModel");
 const objectModel = require("../../../models/objectModel");
+const recordServerError = require("../../serverErrorControllers/recordServerError");
 
 const adminGetBucket = async (req, res) => {
   try {
@@ -21,6 +22,7 @@ const adminGetBucket = async (req, res) => {
 
     return res.status(200).send({ status: true, data: { bucket, objects } });
   } catch (error) {
+    recordServerError(error, req);
     return res.status(500).send({ status: false, message: error });
   }
 };

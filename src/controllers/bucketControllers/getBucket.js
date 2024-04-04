@@ -2,6 +2,7 @@ const bucketModel = require("../../models/bucketModel");
 const objectModel = require("../../models/objectModel");
 
 const { isValidObjectId } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const getBuckets = async (req, res) => {
   try {
@@ -21,6 +22,7 @@ const getBuckets = async (req, res) => {
       data: availableBuckets,
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -59,6 +61,7 @@ const getBucket = async (req, res) => {
       data: { bucket, objects },
     });
   } catch (error) {
+    recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
   }
 };

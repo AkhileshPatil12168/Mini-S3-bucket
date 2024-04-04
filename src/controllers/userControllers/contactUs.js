@@ -8,6 +8,7 @@ const {
   isValidObjectId,
   isValidString,
 } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const contactUs = async (req, res) => {
   try {
@@ -52,6 +53,7 @@ const contactUs = async (req, res) => {
       .status(200)
       .send({ status: true, message: "message send successfully", data: response });
   } catch (error) {
+    recordServerError(error, req);
     return res.status(500).send({ status: false, message: error.message });
   }
 };

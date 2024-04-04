@@ -11,6 +11,7 @@ const {
   isValidPhone,
   isValidUserName,
 } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
 
 const createAdmin = async (req, res) => {
   try {
@@ -81,6 +82,7 @@ const createAdmin = async (req, res) => {
       data: createAdmin,
     });
   } catch (error) {
+    recordServerError(error, req);
     return res.status(500).send({ status: false, message: error });
   }
 };
