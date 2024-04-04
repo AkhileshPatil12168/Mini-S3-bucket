@@ -15,10 +15,10 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     // let model;
 
-    if (!email) return res.status(400).send({ status: false, message: "User Email is Requierd" });
+    if (!email) return res.status(400).send({ status: false, message: "Email is Requierd" });
 
     if (!password)
-      return res.status(400).send({ status: false, message: "User Password is Requierd" });
+      return res.status(400).send({ status: false, message: "Password is Requierd" });
 
     if (!isValidEmail(email))
       return res.status(400).send({ status: false, message: "Enter Valid Email Id" });

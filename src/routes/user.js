@@ -10,7 +10,7 @@ const deleteUser = require("../controllers/userControllers/deleteUser");
 
 // const contactUs = require("../controllers/userController/contactUs");
 
-Router.post("/create/user/", createUser);
+Router.post("/register/user", createUser);
 Router.get("/user/:userId/profile", authentication, getUserDetails);
 Router.put("/user/:userId/profile", authentication, updateUser);
 Router.delete("/user/:userId/profile", authentication, authorization, deleteUser);
