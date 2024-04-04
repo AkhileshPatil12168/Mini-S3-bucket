@@ -36,7 +36,7 @@ const getServerInformation = async (req, res) => {
     data.requests = await connectUsModel
       .find({ resolved: false })
       .sort({ requestedDate: -1 })
-      .select({ name: 1, email: 1, requestedDate: 1, message: 1 })
+      .select({ name: 1, email: 1, requestedDate: 1, subject: 1 })
       .limit(10)
       .lean();
 

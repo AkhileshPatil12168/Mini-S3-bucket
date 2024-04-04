@@ -12,7 +12,7 @@ const {
 const contactUs = async (req, res) => {
   try {
     const data = req.body;
-    let { userId, name, email, message } = data;
+    let { userId, name, email, subject, message } = data;
 
     if (!name) return res.status(400).send({ status: false, message: "name is requried" });
     if (!isNotProvided(name))
@@ -26,11 +26,18 @@ const contactUs = async (req, res) => {
     if (!isValidEmail(email))
       return res.status(400).send({ status: false, message: "enter a valid email" });
 
+    if (!subject) return res.status(400).send({ status: false, message: "subject is requried" });
+    if (!isNotProvided(subject))
+      return res.status(400).send({ status: false, message: "provide the message" });
+    subject = validTrim(subject);
+    if (!isValidString(subject))
+      return res.status(400).send({ status: false, message: "subject is in incorrect format" });
+
     if (!message) return res.status(400).send({ status: false, message: "message is requried" });
-    if (!isValidString(message))
-      return res.status(400).send({ status: false, message: "message is in incorrect format" });
     if (!isNotProvided(message))
       return res.status(400).send({ status: false, message: "provide the message" });
+    if (!isValidString(message))
+      return res.status(400).send({ status: false, message: "message is in incorrect format" });
     message = validTrim(message);
     if (message.length < 15)
       return res
