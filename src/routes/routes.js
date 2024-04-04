@@ -8,6 +8,7 @@ const storageRoute = require("./storage");
 const bucketRoute = require("./bucket");
 const objectRoute = require("./object");
 const contactUsRoute = require("./contactUs");
+const serverErrorRoute = require("./serverErrors")
 
 // const reportsRoute = require("./reports")
 
@@ -18,6 +19,7 @@ Router.use(bucketRoute);
 Router.use(objectRoute);
 Router.use(contactUsRoute);
 Router.use(storageRoute);
+Router.use(serverErrorRoute)
 
 // Router.use(reportsRoute)
 
