@@ -11,6 +11,38 @@ client.connect();
 
 const objectModel = require("../../models/objectModel");
 const { isValidObjectId } = require("../../utils/validators");
+const recordServerError = require("../serverErrorControllers/recordServerError");
+
+const getAllObjects = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const objects = await objectModel
+      .find({ userId, isDeleted: false })
+      .populate({ path: "bucketId", select: "bucketName" })
+      .sort({ createdAt: -1 })
+      .select({
+        objectName: 1,
+        createdAt: 1,
+        objectLink: 1,
+        objectType: 1,
+        bucketId: 1,
+        objectSize: 1,
+      })
+      .lean();
+
+    if (objects.length == 0)
+      return res.status(400).send({ status: false, message: "objects not found" });
+
+    return res.status(200).send({
+      status: true,
+      message: "Objects found",
+      data: objects,
+    });
+  } catch (error) {
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
 
 const getObject = async (req, res) => {
   try {
@@ -79,4 +111,4 @@ const getObjectByUrl = async (req, res) => {
   }
 };
 
-module.exports = { getObject, getObjectByUrl };
+module.exports = { getAllObjects, getObject, getObjectByUrl };
