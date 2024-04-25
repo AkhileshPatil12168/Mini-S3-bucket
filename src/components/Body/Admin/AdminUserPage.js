@@ -1,9 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { LoginContext } from "../../../Context/loginContext";
+import axios from "axios";
+import { megaBytesConverter, timeConverter } from "../../../utils/utilityFunctions";
 
 const AdminUserPage = () => {
-  // Mock data for demonstration
-  const user = {
+  const { userId } = useParams();
+  const { whoLogedIn, isLogedIn } = useContext(LoginContext);
+  const [user, setUser] = useState({
     userId: 101,
     StorageId: 5020,
     name: "John Doe",
@@ -18,9 +22,27 @@ const AdminUserPage = () => {
       { bucketName: "Bucket 3", bucketId: 654987 },
       { bucketName: "Bucket 4", bucketId: 654987 },
       { bucketName: "Bucket 5", bucketId: 654987 },
-      // Add more bucket data here
     ],
+  });
+
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get(
+        process.env.BACKENDAPI + `/admin/${whoLogedIn?.id}/user/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response?.data?.data);
+      setUser(response?.data?.data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
+
+  useEffect(() => {
+    if (isLogedIn) getUserDetails();
+  }, [isLogedIn]);
 
   return (
     <div className="bg-gray-900 text-yellow-400 min-h-screen p-4">
@@ -28,27 +50,36 @@ const AdminUserPage = () => {
         <h1 className="text-3xl font-bold mb-8 text-center uppercase">User Details</h1>
 
         <div className="bg-gray-600 rounded-lg p-6 shadow-md text-white">
-          <h2 className="text-xl font-semibold mb-4 text-center">{user.userId}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-center">{user?.userId?._id}</h2>
           <p className="text-lg font-semibold mb-2">
-            Name: <span className="text-gray-300 font-normal">{user.name}</span>
+            Name:{" "}
+            <span className="text-gray-300 font-normal">
+              {user?.userId?.fname + " " + user?.userId?.lname}
+            </span>
           </p>
           <p className="text-lg font-semibold mb-2 hover:bg-gray-500">
-            Storage ID: <span className="text-gray-300 font-normal underline"><Link to="/admin/storage/:id">{user.StorageId}</Link></span>
+            Storage ID:{" "}
+            <span className="text-gray-300 font-normal underline">
+              <Link to={`/admin/storage/${user?._id}`}>{user?._id}</Link>
+            </span>
           </p>
           <p className="text-lg font-semibold mb-2">
-            Email: <span className="text-gray-300 font-normal">{user.email}</span>
+            Email: <span className="text-gray-300 font-normal">{user?.userId?.email}</span>
           </p>
           <p className="text-lg font-semibold mb-2">
-            Date of Birth: <span className="text-gray-300 font-normal">{user.dob}</span>
+            Date of Birth: <span className="text-gray-300 font-normal">{timeConverter(user?.userId?.dateOfBirth, "date")}</span>
           </p>
           <p className="text-lg font-semibold mb-2">
-            Storage Size: <span className="text-gray-300 font-normal">{user.storageSize}</span>
+            Storage Size: <span className="text-gray-300 font-normal">{megaBytesConverter(user?.storageSize)}</span>
           </p>
           <p className="text-lg font-semibold mb-2">
-            Used Space: <span className="text-gray-300 font-normal"> {user.usedSpace}</span>
+            Used Space: <span className="text-gray-300 font-normal"> {megaBytesConverter(user?.usedSpace, "floor")}</span>
           </p>
           <p className="text-lg font-semibold mb-2">
-            Total Buckets: <span className="text-gray-300 font-normal"> {user.totalBuckets}</span>
+            Free Space: <span className="text-gray-300 font-normal"> {megaBytesConverter(user?.freeSpace, "ceil")}</span>
+          </p>
+          <p className="text-lg font-semibold mb-2">
+            Total Buckets: <span className="text-gray-300 font-normal"> {user?.totalBuckets}</span>
           </p>
         </div>
 
@@ -56,13 +87,22 @@ const AdminUserPage = () => {
           <h2 className="text-xl font-semibold mb-4 text-center uppercase">Buckets</h2>
           <div className="bg-gray-600 rounded-lg px-4 pt-2 shadow-md overflow-y-auto max-h-40 text-white">
             {user.buckets.map((bucket, index) => (
-                <Link to="/admin/bucket/:id">
-              <div key={index} className="mb-2   border-b-2 border-gray-400 pl-2 hover:bg-gray-500 rounded-md">
-                <p className="text-lg font-semibold mb-2">
-                  Bucket id: <span className="text-gray-300 font-normal underline">{bucket.bucketId}</span>
-                </p>
-                <p className="text-lg mb-2">Bucket Name: <span className="text-gray-300 font-normal">{bucket.bucketName}</span></p>
-              </div></Link>
+              <Link to={`/admin/bucket/${bucket?.bucketId?._id}`} key={index}>
+                <div className="mb-2   border-b-2 border-gray-400 pl-2 hover:bg-gray-500 rounded-md">
+                  <p className="text-lg font-semibold mb-2">
+                    Bucket id:{" "}
+                    <span className="text-gray-300 font-normal underline">
+                      {bucket?.bucketId?._id}
+                    </span>
+                  </p>
+                  <p className="text-lg mb-2">
+                    Bucket Name:{" "}
+                    <span className="text-gray-300 font-normal">
+                      {bucket?.bucketId?.bucketName}
+                    </span>
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

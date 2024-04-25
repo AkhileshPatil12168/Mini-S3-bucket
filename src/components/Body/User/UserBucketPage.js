@@ -2,20 +2,43 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LoginContext } from "../../../Context/loginContext";
+import downArrow from "../../../icons/down-arrow-svgrepo-com.svg";
+import { timeConverter } from "../../../utils/utilityFunctions";
 
 const UserBucketPage = () => {
-  const { cUserId } = useContext(LoginContext);
+  const { cUserId, isLogedIn } = useContext(LoginContext);
   const { id } = useParams();
+
+  const [copied, setCopied] = useState("Copy Link");
+  const [angle, setAngle] = useState(0);
 
   const [bucketInfo, setBucketInfo] = useState(null);
   const [bucketObjects, setBucketObjects] = useState([]);
   const [expandedObject, setExpandedObject] = useState(null);
 
   const [files, setFiles] = useState([]);
-  const [uploadedObjects, setUploadedObjects] = useState([])
+  const [uploadedObjects, setUploadedObjects] = useState([]);
+
+  const [responseMessage, setResponceMessage] = useState(null);
+
+  const copyLink = (link) => {
+    navigator.clipboard.writeText(link);
+    setCopied("✓ Copied");
+    (() => {
+      setTimeout(() => {
+        setCopied("Copy Link");
+      }, 2000);
+    })();
+  };
 
   const toggleObjectExpansion = (index) => {
     setExpandedObject((prevIndex) => (prevIndex === index ? null : index), console.log(index));
+  };
+
+  const rotate = (value) => {
+    setAngle(Math.abs(angle - value));
+    // ag = (Math.abs(ag - value))
+    // console.log(ag-value)
   };
 
   const handleFiles = (e) => {
@@ -42,7 +65,7 @@ const UserBucketPage = () => {
       const formData = new FormData();
       e.preventDefault();
       for (let object of files) {
-        formData.append("file", object)
+        formData.append("file", object);
       }
       const response = await axios.post(
         process.env.BACKENDAPI + `/user/${cUserId}/bucket/${id}`,
@@ -53,16 +76,20 @@ const UserBucketPage = () => {
       );
 
       console.log(response?.data);
-      setUploadedObjects(response?.data?.data)
-      
+      setUploadedObjects(response?.data?.data);
+      setBucketObjects([...response?.data?.data,...bucketObjects])
+      setResponceMessage(response?.data?.message);
     } catch (error) {
+      setResponceMessage(error?.response?.data?.message);
+
       console.log(error);
     }
   };
   useEffect(() => {
-    getBucketData();
-    setFiles([])
-  }, [uploadedObjects]);
+    if (isLogedIn) getBucketData();
+
+    setFiles([]);
+  }, [isLogedIn]);
 
   return (
     <div className="bg-gray-900 text-white min-h-screen px-4">
@@ -80,7 +107,7 @@ const UserBucketPage = () => {
               Total Objects: {bucketInfo?.totalObjects}
             </p>
             <p className="text-lg font-semibold mb-2 text-black">
-              Bucket create date: {bucketInfo?.createdAt}
+              Bucket create date: {timeConverter(bucketInfo?.createdAt)}
             </p>
           </div>
         </div>
@@ -94,8 +121,10 @@ const UserBucketPage = () => {
             multiple
           />
         </div>
-
-        <div className="mt-8 text-center" onClick={uploadFiles}>
+        <div className=" h-6 mt-2 ">
+          <p className="text-red-500 text-lg   text-center">{responseMessage} </p>
+        </div>
+        <div className="mt-4 text-center" onClick={uploadFiles}>
           <label className="bg-yellow-500 text-white py-2 px-6 rounded-md hover:bg-yellow-600 cursor-pointer">
             Upload
           </label>
@@ -104,14 +133,19 @@ const UserBucketPage = () => {
         <div>
           <h2 className="text-xl font-semibold mb-4 ">Objects</h2>
           <div className=" grid-rows-1 md:grid-cols-1 gap-6 bg-gray-700 p-4 rounded-md max-h-80 overflow-y-auto">
-            {bucketObjects.map((object, index) => (
-              <div
-                key={index}
-                className="relative bg-white rounded-lg p-4 shadow-md mb-4"
-                onClick={() => toggleObjectExpansion(index)}
-              >
-                <div className="flex justify-between items-center mb-2 cursor-pointer">
-                  <h3 className="text-lg font-semibold text-black">{object?.objectName}</h3>
+            {bucketObjects?.map((object, index) => (
+              <div key={index} className="relative bg-white rounded-lg p-4 shadow-md mb-4">
+                <div
+                  className="flex justify-between items-center mb-2 cursor-pointer bg-gray-300 p-2 rounded-md"
+                  onClick={() => {
+                    toggleObjectExpansion(index), rotate(180);
+                  }}
+                >
+                  <p className="text-lg font-semibold text-black text-wrap ">
+                    {object?.objectName}
+                  </p>
+
+                  <img src={downArrow} className={`h-4 rotate-${angle} duration-500`}></img>
                 </div>
                 {expandedObject === index && (
                   <div>
@@ -128,8 +162,11 @@ const UserBucketPage = () => {
                       </p>
                     </div>
                     <div className="flex flex-row justify-center mt-2 ">
-                      <button onClick={()=>{navigator.clipboard.writeText(object?.objectLink)}} className="bg-green-500  text-white py-2 px-6 mr-2 rounded-md hover:bg-green-600 cursor-pointer w-32">
-                        Copy Link
+                      <button
+                        onClick={() => copyLink(object?.objectLink)}
+                        className="bg-green-500  text-white py-2 px-6 mr-2 rounded-md hover:bg-green-600 cursor-pointer w-32"
+                      >
+                        {copied}
                       </button>
                       <button className="bg-red-500  text-white py-2 px-6 rounded-md hover:bg-red-600 cursor-pointer w-32">
                         Delete
@@ -140,6 +177,11 @@ const UserBucketPage = () => {
               </div>
             ))}
           </div>
+        </div>
+        <div className="flex justify-center">
+          <button className="bg-red-500  text-white py-2 px-6 rounded-md hover:bg-red-600 cursor-pointer mt-2 ">
+            Delete Bucket
+          </button>
         </div>
       </div>
     </div>

@@ -4,8 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const UserHomePage = () => {
-  const { token, whoLogedIn } = useContext(LoginContext);
-  console.log(token, whoLogedIn);
+  const {isLogedIn, whoLogedIn } = useContext(LoginContext);
 
   const [info, setInfo] = useState({});
   const [recentObjects, setRecentObjects] = useState([]);
@@ -27,8 +26,9 @@ const UserHomePage = () => {
   };
 
   useEffect(() => {
+    if(isLogedIn)
     getData();
-  }, []);
+  }, [isLogedIn]);
   return (
     <>
       <div className="mb-8">
@@ -40,7 +40,7 @@ const UserHomePage = () => {
               <Link to={`/bucket/${bucket?.bucketId?._id}`}  key={id}>
                 {console.log(bucket)}
                 <div
-                  className="bg-gray-200 rounded-lg p-6 shadow-md flex-shrink-0 mr-6 hover:bg-white"
+                  className="bg-gray-200 rounded-lg p-6 shadow-md flex-shrink-0 mr-6 hover:bg-white w-fit min-w-48 "
                  
                 >
                   <h3 className="text-lg font-semibold mb-2 text-black">
@@ -82,11 +82,6 @@ const UserHomePage = () => {
               <div className="border-b-2 border-gray-200 pb-4 mb-4">
                 <div className="flex justify-between">
                   <h3 className="text-lg font-semibold mb-2 text-black"> {object?.objectName}</h3>
-                  <div className="">
-                    <button className="bg-green-500  text-white py-1 mr-1 rounded-md hover:bg-green-600 cursor-pointer w-32">
-                      Copy Link
-                    </button>
-                  </div>
                 </div>
                 <p className="text-gray-700">
                   Object Link:{" "}
@@ -94,6 +89,11 @@ const UserHomePage = () => {
                     {object?.objectLink}
                   </a>
                 </p>
+                  <div className="flex justify-center">
+                    <button className="bg-green-500  text-white py-1 mt-2 mr-1 rounded-md hover:bg-green-600 cursor-pointer w-32">
+                      Copy Link
+                    </button>
+                  </div>
               </div>
             </div>
           ))}

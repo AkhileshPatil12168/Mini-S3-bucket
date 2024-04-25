@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../../Context/loginContext";
-import { megaBytesConverter } from "../../../utils/utilityFunctions";
+import { megaBytesConverter, timeConverter } from "../../../utils/utilityFunctions";
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const AdminHomePage = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900  min-h-screen px-4  ">
+    <div className="bg-gray-900  min-h-screen">
       <div className="container mx-auto flex-grow ">
         <h1 className="text-3xl font-bold mb-8 text-center">Admin Dashboard</h1>
 
@@ -64,6 +64,19 @@ const AdminHomePage = () => {
 
           <div className="bg-gray-600  rounded-lg  shadow-md overflow-y-auto max-h-60">
             <h2 className="text-xl font-semibold mb-4 sticky top-0 bg-yellow-400 text-center ">
+              Server Errors
+            </h2>
+
+            {data?.serverErrors?.map((data,index) => (
+              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+                <p>Error ID: {data?._id}</p>
+                <p>Error Time: {timeConverter(data?.createdAt)}</p>
+                <p>Error Type: {data?.errorType[0]} </p>
+              </div>
+            ))}
+          </div>
+          <div className="bg-gray-600  rounded-lg  shadow-md overflow-y-auto max-h-60">
+            <h2 className="text-xl font-semibold mb-4 sticky top-0 bg-yellow-400 text-center ">
               Storage Data
             </h2>
 
@@ -71,7 +84,7 @@ const AdminHomePage = () => {
               <div key={data.userId} className="mt-2 pl-4 pb-2 border-b-2">
                 <p>User ID: {data.userId}</p>
                 <p>Storage Allocated: {megaBytesConverter(data?.storageSize)} MB</p>
-                <p>Used: {megaBytesConverter(data.usedSpace, "ceil")}</p>
+                <p>Used: {megaBytesConverter(data.usedSpace, "ceil")} MB</p>
               </div>
             ))}
           </div>
@@ -82,11 +95,11 @@ const AdminHomePage = () => {
             </h2>
 
             {data?.users?.map((user, index) => (
-              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
+              <Link to={`/admin/storage/${user?._id}`} ><div key={index} className="p-2 pl-4 pb-2 border-b-2 hover:bg-gray-700">
                 <p>User ID: {user._id}</p>
                 <p>User Name: {user?.fname + " " + user?.lname}</p>
                 <p>Email: {user?.email}</p>
-              </div>
+              </div></Link>
             ))}
           </div>
 
@@ -99,7 +112,7 @@ const AdminHomePage = () => {
               <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
                 <p>Name: {request?.name}</p>
                 <p>Email: {request?.email}</p>
-                <p>Message: {request?.message}</p>
+                <p>Subject: {request?.subject}</p>
               </div>
             ))}
           </div>
@@ -117,7 +130,7 @@ const AdminHomePage = () => {
             ))}
           </div>
 
-          <div className="bg-gray-600  rounded-lg  shadow-md overflow-y-auto min-h-40 max-h-60">
+          <div className="bg-gray-600  rounded-lg  shadow-md overflow-y-auto min-h-40 max-h-60 hidden">
             <h2 className="text-xl font-semibold mb-4 sticky top-0 bg-yellow-400 text-center ">
               Recent Uploaded Objects
             </h2>

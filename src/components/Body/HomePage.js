@@ -13,11 +13,11 @@ const Feature = ({ title, description }) => {
 };
 const HomePage = () => {
   const { whoLogedIn, isLogedIn } = useContext(LoginContext);
-  console.log(whoLogedIn);
-  useEffect(()=>{},[isLogedIn,whoLogedIn]) 
+  console.log(whoLogedIn, isLogedIn);  
+  useEffect(()=>{},[isLogedIn]) 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      <div className="container px-4 py-8 flex-grow md:px-[20%]">
+      <div className="container px-4 py-8 flex-grow md:px-10 lg:px-10 xl:px-40">
       {isLogedIn && whoLogedIn?.type == "User" ? (
         <UserHomePage/>
       ) : isLogedIn && whoLogedIn?.type == "Admin" ? (

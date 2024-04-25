@@ -14,6 +14,7 @@ const ContactPage = () => {
     let name = e.target.name;
     let value = e.target.value;
     setData({ ...data, [name]: value });
+    console.log(data)
   };
 
   function changeText() {
@@ -90,6 +91,20 @@ const ContactPage = () => {
                 className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:border-yellow-500"
               />
             </div>
+            <div>
+              <label htmlFor="subject" className="block mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="Your Subject"
+                onChange={handleChanges}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:border-yellow-500"
+              />
+            </div>
+            
             <div>
               <label htmlFor="message" className="block mb-1">
                 Message

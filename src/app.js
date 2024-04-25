@@ -25,6 +25,9 @@ import AllStoragePage from "./components/Body/Admin/AdminAllStorages";
 import AdminUsersPage from "./components/Body/Admin/AdminAllUsersPage";
 import AdminUserPage from "./components/Body/Admin/AdminUserPage";
 import AdminBucketPage from "./components/Body/Admin/AdminBucketPage";
+import ObjectsPage from "./components/Body/User/UserAllObjectsPage";
+import ServerErrorPage from "./components/Body/ServerErrorPage";
+import AdminServerInfo from "./components/Body/Admin/AdminServerPage";
 
 const AppLayout = () => {
   return (
@@ -47,20 +50,26 @@ const appRouter = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/pricing", element: <PricingPage /> },
       { path: "/register", element: <RegisterPage /> },
+      { path: "/server-error", element: <ServerErrorPage /> },
+
 
       { path: "/admin/create/admin", element: <CreateNewAdminPage /> },
       { path: "/admin/profile", element: <AdminAccountPage /> },
+      { path: "/admin/server", element: <AdminServerInfo /> },
+
       { path: "/admin/storages", element: <AllStoragePage /> },
-      { path: "/admin/storage/:id", element: <AdminStoragePage /> },
+      { path: "/admin/storage/:storageId", element: <AdminStoragePage /> },
       { path: "/admin/users", element: <AdminUsersPage /> },
-      { path: "/admin/user/:id", element: <AdminUserPage /> },
-      { path: "/admin/bucket/:id", element: <AdminBucketPage /> },
+      { path: "/admin/user/:userId", element: <AdminUserPage /> },
+      { path: "/admin/bucket/:bucketId", element: <AdminBucketPage /> },
 
 
       { path: "/storage", element: <UserStoragePage /> },
       { path: "/buckets", element: <UserBucketsPage /> },
       { path: "/bucket/:id", element: <UserBucketPage /> },
       { path: "/account", element: <UserAccountPage /> },
+      { path: "/objects", element: <ObjectsPage /> },
+      
 
       { path: "/contactus", element: <ContactPage /> },
     ],

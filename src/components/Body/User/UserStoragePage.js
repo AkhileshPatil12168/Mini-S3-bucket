@@ -2,12 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../../Context/loginContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { megaBytesConverter } from "../../../utils/utilityFunctions";
 
 const StoragePage = () => {
   const { cUserId } = useContext(LoginContext);
-const navigate = useNavigate()
-
-
+  const navigate = useNavigate();
 
   const [storageInfo, setStorageInfo] = useState({});
 
@@ -37,8 +36,15 @@ const navigate = useNavigate()
           <h2 className="text-xl font-semibold mb-4">Storage Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <p className="text-gray-700">Storage Size: {Math.ceil(storageInfo?.storageSize/(1024*1024))} MB</p>
-              <p className="text-gray-700">Used Space: {Math.ceil(storageInfo?.usedSpace/(1024*1024))} MB</p>
+              <p className="text-gray-700">
+                Storage Size: {megaBytesConverter(storageInfo?.storageSize)} MB
+              </p>
+              <p className="text-gray-700">
+                Used Space: {megaBytesConverter(storageInfo?.usedSpace, "ceil")} MB
+              </p>
+              <p className="text-gray-700">
+                Free Space: {megaBytesConverter(storageInfo?.freeSpace, "floor")} MB
+              </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-md">
               <p className="text-gray-700">Total Buckets: {storageInfo?.totalBuckets}</p>
@@ -50,19 +56,26 @@ const navigate = useNavigate()
         {/* Buckets Section */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Your Buckets</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-6">
             {storageInfo?.buckets?.map((bucket, index) => (
               <div key={index} className="relative">
                 <div className="bg-white rounded-lg p-6 shadow-md">
                   <h3 className="text-lg font-semibold mb-2 text-black">
                     {bucket?.bucketId?.bucketName}
                   </h3>
-                  <p className="text-gray-700">Size: {Math.ceil(bucket?.bucketId?.bucketSize/(1024*1024))} MB</p>
+                  <p className="text-gray-700">
+                    Size: {megaBytesConverter(bucket?.bucketId?.bucketSize, "ceil")} MB
+                  </p>
                   <p className="text-gray-700">Objects: {bucket?.bucketId?.totalObjects}</p>
                 </div>
-                <button onClick={()=>navigate(`/bucket/${bucket?.bucketId?._id}`)} className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-yellow-500 hover:bg-yellow-600 text-white py-4 px-8 rounded-md mr-4">
+                <button
+                  onClick={() => navigate(`/bucket/${bucket?.bucketId?._id}`)}
+                  className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-8 rounded-md mr-4"
+                >
                   Upload
                 </button>
+                
+                
               </div>
             ))}
           </div>

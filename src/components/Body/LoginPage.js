@@ -1,13 +1,16 @@
 import React, { useState, useContext } from "react";
-import { Link, useNavigate, redirect } from "react-router-dom";
+import { Link, useNavigate, redirect, useLocation } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../Context/loginContext";
 
 const LoginPage = () => {
-  const navigate = useNavigate()
-  const {setIsLogedIn, setWhoLogedIn, setToken}= useContext(LoginContext)
-  const [data, setData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+  const location = useLocation();
+  let stateData = location?.state;
+  const { setIsLogedIn, setWhoLogedIn, setToken } = useContext(LoginContext);
+  const [data, setData] = useState({ email: stateData?.email || "", password: "" });
   const [responseData, setResponseData] = useState({});
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     let name = e.target.name;
@@ -26,19 +29,19 @@ const LoginPage = () => {
         withCredentials: true,
       });
       setResponseData(response.data.data);
-      setIsLogedIn(true)
-      setWhoLogedIn(response.data.data.userType)
-      setToken(response.data.data.token)
-      if(response.status==200)navigate("/")
+      setIsLogedIn(true);
+      setWhoLogedIn({ type: response?.data?.data?.userType, id: response?.data?.data?.userId });
+      setToken(response?.data?.data?.token);
+      if (response.status == 200) navigate("/");
 
       console.log(response.data.data);
     } catch (error) {
-      console.log(error.response.data);
+      setError(error?.response?.data?.message);
     }
   };
 
   return (
-    <div className="bg-gray-900 text-white flex flex-col min-h-screen">
+    <div className="bg-gray-900 text-white flex flex-col min-h-screen px-2">
       <div className="container mx-auto py-8 flex-grow flex justify-center items-center">
         <div className="bg-gray-100 p-8 rounded-lg shadow-md w-full sm:max-w-md">
           <h2 className="text-3xl font-bold mb-4 text-center text-gray-900">Login</h2>
@@ -66,6 +69,7 @@ const LoginPage = () => {
                 onChange={handleSubmit}
                 className="text-black w-full px-4 py-2 mb-4 rounded-md border border-gray-300 focus:outline-none focus:border-yellow-500"
               />
+              <p className="text-red-500 text-center">{error}</p>
             </div>
             <div>
               <button

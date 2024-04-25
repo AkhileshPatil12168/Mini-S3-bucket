@@ -10,6 +10,15 @@ const UserAccountPage = () => {
   const [dob, setDob] = useState("");
   const [fromDate, setFromDate] = useState(null);
 
+  const [error, setError] = useState({
+    fname: "",
+    lname: "",
+    email: "",
+    phone: "",
+    password: "",
+    dateOfBirth: "",
+  });
+
   const handleUpdate = () => {
     // Handle update logic here
     console.log("Update button clicked!");
@@ -17,13 +26,16 @@ const UserAccountPage = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen px-4">
-      <div className="container mx-auto py-8 flex-grow md:px-[30%] ">
+      <div className="container mx-auto py-8 flex-grow  md:px-[25%] lg:[30%] xl:px-[35%] ">
         <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
 
         <div className="mb-4 ">
-          <label htmlFor="firstName" className="block mb-2 text-lg font-semibold">
-            First Name
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              First Name
+            </label>
+            <label className="text-red-500">{error?.fname}</label>
+          </div>
           <input
             type="text"
             id="firstName"
@@ -33,9 +45,12 @@ const UserAccountPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="lastName" className="block mb-2 text-lg font-semibold">
-            Last Name
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              Last Name
+            </label>
+            <label className="text-red-500">{error?.lname}</label>
+          </div>
           <input
             type="text"
             id="lastName"
@@ -45,9 +60,12 @@ const UserAccountPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block mb-2 text-lg font-semibold">
-            Email
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              Email
+            </label>
+            <label className="text-red-500">{error?.email}</label>
+          </div>
           <input
             type="email"
             id="email"
@@ -57,9 +75,12 @@ const UserAccountPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="phone" className="block mb-2 text-lg font-semibold">
-            Phone
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              Phone
+            </label>
+            <label className="text-red-500">{error?.phone}</label>
+          </div>
           <input
             type="text"
             id="phone"
@@ -69,9 +90,12 @@ const UserAccountPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block mb-2 text-lg font-semibold">
-            Password
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              Password
+            </label>
+            <label className="text-red-500">{error?.password}</label>
+          </div>
           <input
             type="password"
             id="password"
@@ -80,12 +104,16 @@ const UserAccountPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {/* <div className="mb-4">
-            <label htmlFor="password" className="block mb-2 text-lg font-semibold">
-              Date of Birth
+        <div className="mb-4  ">
+          <div className="flex justify-between">
+            <label htmlFor="firstName" className="block mb-2 text-lg font-semibold ">
+              Date Of Birth
             </label>
+            <label className="text-red-500">{error?.dateOfBirth}</label>
+          </div>
+          <div className="flex justify-left w-fit">
             <DatePicker
-              className="px-[44%] md:px-[78%] rounded-lg bg-gray-800 text-white focus:outline-none focus:ring focus:border-blue-300"
+              className=" rounded-lg bg-gray-800 text-white focus:outline-none focus:ring focus:border-blue-300"
               selected={fromDate}
               onChange={(date) => setFromDate(date)}
               dateFormat="yyyy-MM-dd"
@@ -93,9 +121,11 @@ const UserAccountPage = () => {
               showYearDropdown
               showMonthDropdown
             />
-          </div> */}
+          </div>
+        </div>
 
-        <div className="flex justify-center mt-8">
+        <div className="text-center text-red-500">Error Response</div>
+        <div className="flex justify-center mt-4">
           <button
             className="bg-yellow-500 text-white py-3 px-6 rounded-md hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600"
             onClick={handleUpdate}
