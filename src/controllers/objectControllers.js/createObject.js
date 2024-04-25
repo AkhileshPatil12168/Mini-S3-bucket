@@ -32,6 +32,13 @@ const createObject = async (req, res) => {
       let object = { userId, bucketId };
       let originalname = addUnderscore(obj.originalname);
 
+      const checkDuplicateName = await objectModel
+        .findOne({ objectName: originalname, isDeleted: false })
+        .select({ _id: 1 })
+        .lean();
+      if (checkDuplicateName)
+        return res.status(400).send({ status: false, message: `${originalname} already exists.` });
+
       const filePath = path.join(getBucket.bucketPath, originalname);
       const dirPath = path.dirname(filePath);
       if (!fs.existsSync(dirPath)) {
@@ -65,7 +72,7 @@ const createObject = async (req, res) => {
 
     return res.status(200).send({
       status: true,
-      message: "object added successfully",
+      message: "object uploaded successfully",
       data: createdObject,
     });
   } catch (error) {
