@@ -4,6 +4,7 @@ const connectUsModel = require("../../../models/contactUsModel");
 const bucketModel = require("../../../models/bucketModel");
 const objectModel = require("../../../models/objectModel");
 const recordServerError = require("../../serverErrorControllers/recordServerError");
+const serverErrorsModel = require("../../../models/serverErrorsModel");
 
 const getServerInformation = async (req, res) => {
   try {
@@ -20,6 +21,12 @@ const getServerInformation = async (req, res) => {
         },
       },
     ]);
+
+    data.serverErrors = await serverErrorsModel
+      .find({ resolved: false })
+      .sort({ createdAt: -1 })
+      .select({ errorType: 1, createdAt: 1 })
+      .lean();
 
     data.storages = await storageModel
       .find({ isDeleted: false })
@@ -55,7 +62,11 @@ const getServerInformation = async (req, res) => {
       .limit(10)
       .lean();
 
-    return res.status(200).send({ status: true, message: "successfull", data:{...data,server:{...data.server[0]}} });
+    return res.status(200).send({
+      status: true,
+      message: "successfull",
+      data: { ...data, server: { ...data.server[0] } },
+    });
   } catch (error) {
     recordServerError(error, req);
     res.status(500).send({ status: false, message: error.message });
