@@ -12,6 +12,7 @@ client.connect();
 const objectModel = require("../../models/objectModel");
 const { isValidObjectId } = require("../../utils/validators");
 const recordServerError = require("../serverErrorControllers/recordServerError");
+const objectAccessCountModel = require("../../models/ObjectAccessCountModel");
 
 const getAllObjects = async (req, res) => {
   try {
@@ -74,7 +75,9 @@ const getObjectByUrl = async (req, res) => {
     const objectMiniId = req.params.id;
 
     let data = await client.hGetAll(objectMiniId);
-
+    let size = await client.INFO();
+    let info = size.split(`\r\n`); //.map(a=>a.split(":"))
+    // console.log(size.split(`\r\n`).map(a=>a.split(":")))
     if (Object.keys(data).length == 0) {
       data = await objectModel
         .findOne({ objectMiniId })
@@ -107,6 +110,14 @@ const getObjectByUrl = async (req, res) => {
       "Content-Disposition": `attachment; filename=${data.objectName}`,
       "Content-Length": fileData.length,
     });
+    let date = new Date();
+    const fullDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+    await objectAccessCountModel.findOneAndUpdate(
+      { objectId: data._id, date: new Date(fullDate) },
+      { $inc: { totalAccessCount: 1 } },
+      { new: true, upsert: true }
+    );
     res.end(fileData);
   } catch (error) {
     recordServerError(error, req);

@@ -73,4 +73,25 @@ const getServerInformation = async (req, res) => {
   }
 };
 
-module.exports = getServerInformation;
+const getDetailedServerInformation = async (req, res) => {
+  try {
+    const data = {};
+
+    data.serverErrors = await serverErrorsModel
+      .find({ resolved: false })
+      .sort({ createdAt: -1 })
+      .select({ __v: 0 })
+      .lean();
+
+    return res.status(200).send({
+      status: true,
+      message: "successfull",
+      data,
+    });
+  } catch (error) {
+    recordServerError(error, req);
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { getServerInformation, getDetailedServerInformation };
