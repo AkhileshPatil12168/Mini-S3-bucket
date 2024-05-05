@@ -31,7 +31,7 @@ const CreateNewAdminPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            name="firstName"
+            name="userName"
             value={formData.userName}
             onChange={handleChange}
             placeholder="User Name"

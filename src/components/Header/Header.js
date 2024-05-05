@@ -5,10 +5,10 @@ import { LoginContext } from "../../Context/loginContext";
 const Admin = () => {
   return (
     <>
-     <Link to="/admin/server" href="#" className="px-2 hover:underline">
-        Server
+     <Link to="/admin/server-errors"  className="px-2 hover:underline text-red-500">
+        Server Errors
       </Link>
-      <Link to="/admin/storages" href="#" className="px-2 hover:underline">
+      <Link to="/admin/storages" className="px-2 hover:underline">
         Storages
       </Link>
       <Link to="/admin/users" className="px-2 hover:underline">

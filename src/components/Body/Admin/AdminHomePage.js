@@ -67,12 +67,14 @@ const AdminHomePage = () => {
               Server Errors
             </h2>
 
-            {data?.serverErrors?.map((data,index) => (
-              <div key={index} className="mt-2 pl-4 pb-2 border-b-2">
-                <p>Error ID: {data?._id}</p>
-                <p>Error Time: {timeConverter(data?.createdAt)}</p>
-                <p>Error Type: {data?.errorType[0]} </p>
-              </div>
+            {data?.serverErrors?.map((data, index) => (
+              <Link to={`/admin/server/error/${data?._id}`}>
+                <div key={index} className=" pl-4 py-2 border-b-2 hover:bg-slate-700">
+                  <p>Error ID: {data?._id}</p>
+                  <p>Error Time: {timeConverter(data?.createdAt)}</p>
+                  <p>Error Type: {data?.errorType[0]} </p>
+                </div>
+              </Link>
             ))}
           </div>
           <div className="bg-gray-600  rounded-lg  shadow-md overflow-y-auto max-h-60">
@@ -95,11 +97,13 @@ const AdminHomePage = () => {
             </h2>
 
             {data?.users?.map((user, index) => (
-              <Link to={`/admin/storage/${user?._id}`} ><div key={index} className="p-2 pl-4 pb-2 border-b-2 hover:bg-gray-700">
-                <p>User ID: {user._id}</p>
-                <p>User Name: {user?.fname + " " + user?.lname}</p>
-                <p>Email: {user?.email}</p>
-              </div></Link>
+              <Link to={`/admin/user/${user?._id}`}>
+                <div key={index} className="p-2 pl-4 pb-2 border-b-2 hover:bg-gray-700">
+                  <p>User ID: {user._id}</p>
+                  <p>User Name: {user?.fname + " " + user?.lname}</p>
+                  <p>Email: {user?.email}</p>
+                </div>
+              </Link>
             ))}
           </div>
 
